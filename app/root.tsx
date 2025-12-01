@@ -30,6 +30,7 @@ import {
 
 import "./app.css";
 import "@solana/wallet-adapter-react-ui/styles.css";
+import { DEFAULT_CLUSTER } from "./lib/raydium-config";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -102,7 +103,10 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 }
 
 function SolanaProviders({ children }: { children: React.ReactNode }) {
-  const network = WalletAdapterNetwork.Mainnet;
+  const network =
+    DEFAULT_CLUSTER === "devnet"
+      ? WalletAdapterNetwork.Devnet
+      : WalletAdapterNetwork.Mainnet;
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
   const wallets = useMemo(
