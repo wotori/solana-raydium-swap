@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   isRouteErrorResponse,
   Links,
@@ -8,7 +9,27 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
+import {
+  WalletAdapterNetwork,
+  type Adapter,
+} from "@solana/wallet-adapter-base";
+import { clusterApiUrl } from "@solana/web3.js";
+import {
+  ConnectionProvider,
+  WalletProvider,
+} from "@solana/wallet-adapter-react";
+import {
+  WalletModalProvider,
+  WalletMultiButton,
+} from "@solana/wallet-adapter-react-ui";
+import {
+  LedgerWalletAdapter,
+  PhantomWalletAdapter,
+  SolflareWalletAdapter,
+} from "@solana/wallet-adapter-wallets";
+
 import "./app.css";
+import "@solana/wallet-adapter-react-ui/styles.css";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -42,7 +63,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <SolanaProviders>
+      <AppShell>
+        <Outlet />
+      </AppShell>
+    </SolanaProviders>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
@@ -71,5 +98,41 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
         </pre>
       )}
     </main>
+  );
+}
+
+function SolanaProviders({ children }: { children: React.ReactNode }) {
+  const network = WalletAdapterNetwork.Mainnet;
+  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+
+  const wallets = useMemo(
+    () =>
+      [
+        new PhantomWalletAdapter(),
+        new SolflareWalletAdapter({ network }),
+        new LedgerWalletAdapter(),
+      ] satisfies Adapter[],
+    [network],
+  );
+
+  return (
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>{children}</WalletModalProvider>
+      </WalletProvider>
+    </ConnectionProvider>
+  );
+}
+
+function AppShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="relative min-h-screen">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex justify-end px-6 py-4">
+        <div className="pointer-events-auto">
+          <WalletMultiButton className="rounded-full border border-white/10 bg-slate-900/70 px-5 py-2 text-sm font-semibold text-white shadow-xl shadow-sky-500/30 backdrop-blur transition hover:bg-slate-900/50" />
+        </div>
+      </div>
+      {children}
+    </div>
   );
 }
