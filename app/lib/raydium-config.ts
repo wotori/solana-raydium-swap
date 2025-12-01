@@ -1,8 +1,10 @@
-export type SplPoolToken = "MI" | "TEST";
+export type SplPoolToken = "MI" | "TK22";
 
 export type SplTokenPoolData = {
-  baseMint: string;
   poolId: string;
+  tokenInMint: string;
+  tokenOutMint: string;
+  defaultAmount?: string;
 };
 
 export const DEFAULT_CLUSTER = "devnet";
@@ -14,12 +16,16 @@ export const DEFAULT_QUOTE_MINT =
 
 export const TOKEN_ADDRESSES_MAP: Record<SplPoolToken, SplTokenPoolData> = {
   MI: {
-    baseMint: "GNvqQwigjPVDoazf1JnyEGNLReQguiu4U8zxReXqYEww",
     poolId: "2bfY4CBB5f3VAgooaMJVtJ1ZPSgZ3e8csMd6TfhwHafr",
+    tokenInMint: "So11111111111111111111111111111111111111112",
+    tokenOutMint: "GNvqQwigjPVDoazf1JnyEGNLReQguiu4U8zxReXqYEww",
+    defaultAmount: "0.1",
   },
-  TEST: {
-    baseMint: "EpEnu5MZYUBNrbwQJCJZEGGTPitxQ6QsGpu9TDNhxGie",
-    poolId: "13NHhjhJkmxVRN4t3rjfshyEeFK3r7HVHCo3LLisADcm",
+  TK22: {
+    poolId: "127kKZUeEGeYdSkvYZzxvec84Jyu7pZznr1sVkk9pwpC",
+    tokenInMint: "So11111111111111111111111111111111111111112",
+    tokenOutMint: "3LPc47FriFJ1qLmn3E5cGz5RxNsbFuo5pePuYTeQ4peP",
+    defaultAmount: "0.05",
   },
 };
 

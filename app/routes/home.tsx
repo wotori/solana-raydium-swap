@@ -95,7 +95,9 @@ export default function Home() {
     const preset = TOKEN_ADDRESSES_MAP[token];
     updateForm({
       poolAddress: preset.poolId,
-      tokenInAddress: preset.baseMint,
+      tokenInAddress: preset.tokenInMint,
+      tokenOutAddress: preset.tokenOutMint,
+      amount: preset.defaultAmount ?? form.amount,
     });
   };
 
@@ -315,7 +317,10 @@ export default function Home() {
                       {symbol}
                     </p>
                     <p className="font-mono text-[11px] text-slate-300">
-                      Mint: {displayValue(data.baseMint)}
+                      Input: {displayValue(data.tokenInMint)}
+                    </p>
+                    <p className="font-mono text-[11px] text-slate-300">
+                      Output: {displayValue(data.tokenOutMint)}
                     </p>
                     <p className="font-mono text-[11px] text-slate-300">
                       Pool: {displayValue(data.poolId)}
